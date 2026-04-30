@@ -367,6 +367,7 @@ function App() {
   const [shareLink, setShareLink] = useState('');
   const [shareQr, setShareQr] = useState('');
   const [sendQr, setSendQr] = useState('');
+  const [sendLink, setSendLink] = useState('');
   const [accessCode, setAccessCode] = useState('');
   const [shareStatus, setShareStatus] = useState('');
   const [senderIdentity, setSenderIdentity] = useState('');
@@ -563,6 +564,7 @@ function App() {
     setShareLink(nextShareLink);
     setShareQr(nextQr);
     setSendQr(nextSendQr);
+    setSendLink(senderSmsLink);
     setShareStatus('Private link ready.');
   };
 
@@ -1701,6 +1703,22 @@ function App() {
                   <span>Sender quick-send QR</span>
                   <div className="private-share">
                     {sendQr ? <img alt="QR code to open sender SMS compose" src={sendQr} /> : null}
+                    <label className="field">
+                      <span>Sender message link</span>
+                      <input readOnly value={sendLink} />
+                    </label>
+                    <div className="actions compact">
+                      <button
+                        className="secondary"
+                        type="button"
+                        onClick={() => navigator.clipboard?.writeText(sendLink)}
+                      >
+                        Copy sender link
+                      </button>
+                      <a className="secondary" href={sendLink}>
+                        Open sender message
+                      </a>
+                    </div>
                     <p className="privacy-note">
                       Scan this on the sender phone to open an SMS draft with the private link and access code.
                     </p>
