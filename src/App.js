@@ -366,6 +366,7 @@ function App() {
   const [deliveryMode, setDeliveryMode] = useState('text');
   const [shareLink, setShareLink] = useState('');
   const [shareQr, setShareQr] = useState('');
+  const [sendQr, setSendQr] = useState('');
   const [accessCode, setAccessCode] = useState('');
   const [shareStatus, setShareStatus] = useState('');
   const [senderIdentity, setSenderIdentity] = useState('');
@@ -543,6 +544,16 @@ function App() {
         light: '#fffaf4',
       },
     });
+    const sendMessage = `I made a private message for you. Open this link: ${nextShareLink}\nAccess code: ${nextAccessCode}`;
+    const senderSmsLink = `sms:?&body=${encodeURIComponent(sendMessage)}`;
+    const nextSendQr = await QRCode.toDataURL(senderSmsLink, {
+      margin: 1,
+      scale: 7,
+      color: {
+        dark: '#201719',
+        light: '#fffaf4',
+      },
+    });
 
     setAccessCode(nextAccessCode);
     const decodedPayload = decodeSharePayload(encryptedPayload);
@@ -551,6 +562,7 @@ function App() {
     readThread(decodedPayload.shareId).then(setThreadMessages);
     setShareLink(nextShareLink);
     setShareQr(nextQr);
+    setSendQr(nextSendQr);
     setShareStatus('Private link ready.');
   };
 
@@ -1685,6 +1697,15 @@ function App() {
                   Anyone with both the link and code can open it. Send the code
                   separately for better privacy.
                 </p>
+                <div className="field">
+                  <span>Sender quick-send QR</span>
+                  <div className="private-share">
+                    {sendQr ? <img alt="QR code to open sender SMS compose" src={sendQr} /> : null}
+                    <p className="privacy-note">
+                      Scan this on the sender phone to open an SMS draft with the private link and access code.
+                    </p>
+                  </div>
+                </div>
                 <div className="field">
                   <span>Receiver status</span>
                   <div className="private-share">
