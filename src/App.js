@@ -749,6 +749,14 @@ function App() {
     setFeedbackStatus('Thanks. Feedback submitted.');
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('confession_current_user');
+    setCurrentUser(null);
+    setAuthMode('login');
+    setAuthNotice('You have been logged out.');
+    setAuthPrefillUsername('');
+  };
+
   if (!currentUser) {
     return (
       <main className="app-shell" style={{ '--accent': '#d66bff' }}>
@@ -1166,6 +1174,17 @@ function App() {
           <div className="section-heading">
             <p>Compose</p>
             <h2>Shape the message</h2>
+          </div>
+          <div className="private-share">
+            <div>
+              <h3>Account</h3>
+              <p>Signed in as <strong>{currentUser?.email || 'unknown user'}</strong></p>
+            </div>
+            <div className="actions compact">
+              <button className="secondary" type="button" onClick={handleLogout}>
+                Log out
+              </button>
+            </div>
           </div>
           <div className="actions compact">
             <button className={activeTab === 'compose' ? '' : 'secondary'} type="button" onClick={() => setActiveTab('compose')}>
