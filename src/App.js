@@ -4,13 +4,10 @@ import './App.css';
 import logo from './logo.svg';
 import Login from './login';
 import SignUp from './signup';
+import { SUPABASE_ANON_KEY, SUPABASE_REST_URL } from './supabaseClient';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-const SUPABASE_REST_URL =
-  process.env.REACT_APP_SUPABASE_REST_URL || 'https://rmxvqxnxaconpkpoftnr.supabase.co/rest/v1';
-const SUPABASE_ANON_KEY =
-  process.env.REACT_APP_SUPABASE_ANON_KEY || 'sb_publishable_jau2dLQcTEK7z5XlP2AesA_BhUmwsdl';
 const defaultConversationStyle = {
   bubbleColor: '#e8f9ee',
   textColor: '#1f2430',
@@ -44,16 +41,21 @@ function decodeSharePayload(value) {
 }
 
 async function supabaseRequest(path, options = {}) {
-  const response = await fetch(`${SUPABASE_REST_URL}${path}`, {
-    ...options,
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation,resolution=merge-duplicates',
-      ...options.headers,
-    },
-  });
+  let response;
+  try {
+    response = await fetch(`${SUPABASE_REST_URL}${path}`, {
+      ...options,
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation,resolution=merge-duplicates',
+        ...options.headers,
+      },
+    });
+  } catch {
+    throw new Error(`Network error. Check Supabase URL/key config. URL: ${SUPABASE_REST_URL}`);
+  }
 
   if (!response.ok) {
     throw new Error('Supabase request failed');
